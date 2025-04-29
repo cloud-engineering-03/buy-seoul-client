@@ -17,7 +17,7 @@
             <p
               class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0"
             >
-              지하철 노선만 선택하세요. 예산 안에서 살 수 있는 지역을 바로
+              지하철 역만 선택하세요. 예산 안에서 살 수 있는 지역을 바로
               보여드립니다. 더 이상 복잡한 검색과 흩어진 정보를 찾아다닐 필요
               없습니다.
             </p>
@@ -25,12 +25,12 @@
               class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start"
             >
               <div class="rounded-md shadow">
-                <a
-                  href="#"
+                <NuxtLink
+                  href="/search"
                   class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
                 >
                   지금 시세 비교 시작하기
-                </a>
+                </NuxtLink>
               </div>
             </div>
           </div>

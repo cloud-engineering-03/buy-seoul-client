@@ -9,9 +9,9 @@
 </template>
 
 <script setup lang="ts">
-import TeamSection from "@/components/TeamSection.vue";
-import ContactSection from "@/components/ContactSection.vue";
-import ProjectFeaturesSection from "@/components/ProjectFeaturesSection.vue";
-import TechStackSection from "@/components/TechStackSection.vue";
-import HeroSection from "@/components/HeroSection.vue";
+import TeamSection from "@/components/landing/TeamSection.vue";
+import ContactSection from "@/components/landing/ContactSection.vue";
+import ProjectFeaturesSection from "@/components/landing/ProjectFeaturesSection.vue";
+import TechStackSection from "@/components/landing/TechStackSection.vue";
+import HeroSection from "@/components/landing/HeroSection.vue";
 </script>

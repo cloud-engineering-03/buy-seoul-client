@@ -26,13 +26,53 @@
             <!-- 시세 트렌드 -->
             <div>
               <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                시세 트렌드
+                시세 분석
               </h2>
-              <div
-                class="bg-gray-50 rounded-lg p-4 h-64 flex items-center justify-center"
-              >
-                <!-- TODO: 차트 컴포넌트 추가 -->
-                <p class="text-gray-500">시세 트렌드 차트가 표시됩니다</p>
+              <div class="flex space-x-2 mb-4">
+                <button
+                  @click="activeChart = 'trend'"
+                  :class="[
+                    'px-4 py-2 rounded-md text-sm font-medium',
+                    activeChart === 'trend'
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+                  ]"
+                >
+                  시세 추이
+                </button>
+                <button
+                  @click="activeChart = 'volume'"
+                  :class="[
+                    'px-4 py-2 rounded-md text-sm font-medium',
+                    activeChart === 'volume'
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+                  ]"
+                >
+                  거래량
+                </button>
+                <button
+                  @click="activeChart = 'comparison'"
+                  :class="[
+                    'px-4 py-2 rounded-md text-sm font-medium',
+                    activeChart === 'comparison'
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+                  ]"
+                >
+                  인근 지역 비교
+                </button>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-4 h-64">
+                <PriceTrendChart
+                  v-if="activeChart === 'trend'"
+                  :data="trendData"
+                />
+                <TransactionVolumeChart
+                  v-else-if="activeChart === 'volume'"
+                  :data="volumeData"
+                />
+                <AreaComparisonChart v-else :data="comparisonData" />
               </div>
             </div>
 
@@ -93,6 +133,10 @@
 </template>
 
 <script setup lang="ts">
+import PriceTrendChart from "~/components/PriceTrendChart.vue";
+import TransactionVolumeChart from "~/components/TransactionVolumeChart.vue";
+import AreaComparisonChart from "~/components/AreaComparisonChart.vue";
+
 const route = useRoute();
 const stationId = route.params.station;
 
@@ -113,4 +157,22 @@ const formatPrice = (price: number) => {
 const goBack = () => {
   navigateTo("/result");
 };
+
+const activeChart = ref<"trend" | "volume" | "comparison">("trend");
+
+// 샘플 데이터 (실제로는 API에서 가져와야 함)
+const trendData = ref({
+  labels: ["1월", "2월", "3월", "4월", "5월", "6월"],
+  values: [65000, 68000, 72000, 75000, 78000, 80000],
+});
+
+const volumeData = ref({
+  labels: ["1월", "2월", "3월", "4월", "5월", "6월"],
+  values: [12, 15, 18, 20, 16, 14],
+});
+
+const comparisonData = ref({
+  labels: ["역삼동", "개포동", "대치동", "도곡동"],
+  values: [80000, 75000, 78000, 72000],
+});
 </script>

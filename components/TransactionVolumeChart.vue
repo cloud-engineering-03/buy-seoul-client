@@ -28,15 +28,16 @@ const initChart = () => {
   }
 
   chart = new Chart(chartRef.value, {
-    type: "line",
+    type: "bar",
     data: {
       labels: props.data.labels,
       datasets: [
         {
-          label: "시세 추이",
+          label: "거래량",
           data: props.data.values,
-          borderColor: "rgb(75, 192, 192)",
-          tension: 0.1,
+          backgroundColor: "rgba(54, 162, 235, 0.5)",
+          borderColor: "rgb(54, 162, 235)",
+          borderWidth: 1,
         },
       ],
     },

@@ -6,7 +6,7 @@
           간단한 3단계로 시작하세요
         </h2>
         <p class="mt-4 text-lg text-gray-500">
-          복잡한 과정 없이, 지하철 노선과 예산만으로 시작할 수 있습니다
+          복잡한 과정 없이, 지하철 역과 예산 입력만으로 시작할 수 있습니다.
         </p>
       </div>
 
@@ -22,11 +22,9 @@
               <span class="text-xl font-bold">1</span>
             </div>
             <h3 class="text-lg font-medium text-gray-900 mb-2">
-              지하철 노선 선택
+              지하철 역 선택
             </h3>
-            <p class="text-gray-500">
-              출퇴근에 사용하는 지하철 노선을 선택하세요.
-            </p>
+            <p class="text-gray-500">출근해야하는 지하철 역을 선택하세요.</p>
           </div>
         </div>
 
@@ -61,15 +59,6 @@
             <p class="text-gray-500">예산에 맞는 지역과 시세를 확인하세요.</p>
           </div>
         </div>
-      </div>
-
-      <div class="mt-12 text-center">
-        <a
-          href="#"
-          class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-        >
-          내 지하철 노선 시세 확인하기
-        </a>
       </div>
     </div>
   </div>

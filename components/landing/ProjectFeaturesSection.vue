@@ -7,30 +7,7 @@
           부동산 정보 찾기, 왜 이렇게 어려울까요?
         </h2>
       </div>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3 mb-16">
-        <div class="bg-gray-50 p-6 rounded-lg">
-          <div
-            class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white mb-4"
-          >
-            <svg
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-              />
-            </svg>
-          </div>
-          <h3 class="text-lg font-medium text-gray-900 mb-2">흩어진 정보</h3>
-          <p class="text-gray-500">
-            여러 사이트를 돌아다니며 정보를 모아야 합니다.
-          </p>
-        </div>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 mb-16">
         <div class="bg-gray-50 p-6 rounded-lg">
           <div
             class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white mb-4"
