@@ -27,7 +27,7 @@
 
 ---
 
-## 📈 전체 기능 후류 (Mermaid)
+## 📈 전체 기능 Flow (Mermaid)
 
 ```mermaid
 flowchart TD
