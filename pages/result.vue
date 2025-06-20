@@ -28,7 +28,21 @@
         <div
           v-for="station in stations"
           :key="station.id"
-          class="absolute w-6 h-6 bg-red-500 rounded-full cursor-pointer transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200"
+          :class="[
+            'absolute w-6 h-6 rounded-full cursor-pointer transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-200',
+            hoveredDistrict &&
+            hoveredDistrict !== selectedDistrict &&
+            districts
+              .find((d) => d.name === hoveredDistrict)
+              ?.stations.some((s) => s.id === station.id)
+              ? 'bg-slate-500 scale-110 z-10'
+              : selectedDistrict &&
+                districts
+                  .find((d) => d.name === selectedDistrict)
+                  ?.stations.some((s) => s.id === station.id)
+              ? 'bg-indigo-500 scale-125 z-10'
+              : 'bg-slate-500 hover:scale-110',
+          ]"
           :style="{
             left: `${(station.lng - 126.5) * 100}%`,
             top: `${(37.8 - station.lat) * 100}%`,
@@ -42,38 +56,58 @@
           </div>
         </div>
 
-        <!-- 마커 팝업 -->
+        <!-- 마커 팝업: 요약만 간결하게 표시 -->
         <div
-          v-if="selectedStation"
-          class="absolute top-4 right-4 w-80 bg-white rounded-lg shadow-lg p-4"
+          v-if="hoveredDistrict"
+          class="absolute top-4 right-4 w-64 bg-white rounded-lg shadow-lg p-3 border border-indigo-200"
         >
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-lg font-medium text-gray-900">
-              {{ selectedStation.name }}
-            </h3>
-            <span
-              class="px-2 py-1 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-full"
-            >
-              {{ selectedStation.line }}호선
-            </span>
+          <h3 class="text-base font-semibold text-gray-900 mb-1">
+            {{ hoveredDistrict }}
+          </h3>
+          <p class="text-sm text-gray-600">
+            {{ districtStations.length }}개 역 포함 · 평균
+            {{ formatPrice(avgPrice) }}만원
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+        <div
+          :id="`district-${district.name}`"
+          v-for="district in districts"
+          :key="district.name"
+          class="transition cursor-pointer"
+          :class="[
+            'p-4 bg-white rounded-lg shadow border',
+            selectedDistrict === district.name
+              ? 'border-indigo-600 border-2 shadow-lg scale-[1.02]'
+              : 'hover:border-indigo-500',
+          ]"
+          @click="selectDistrict(district.name)"
+          @mouseenter="hoveredDistrict = district.name"
+          @mouseleave="hoveredDistrict = null"
+        >
+          <h3 class="text-xl font-bold text-gray-900 mb-1">
+            {{ district.name }}
+          </h3>
+          <p class="text-sm text-gray-600 mb-2">
+            {{ district.stations.length }}개 역 포함
+          </p>
+
+          <div class="text-sm text-gray-700 space-y-1 mb-3">
+            <p>📊 평균 시세: {{ formatPrice(getAvgPrice(district)) }}만원</p>
+            <p>🏠 예상 매물 수: {{ district.stations.length * 3 }}건</p>
           </div>
-          <div class="space-y-2">
-            <div>
-              <p class="text-sm text-gray-500">평균 매매가</p>
-              <p class="text-lg font-semibold text-gray-900">
-                {{ formatPrice(selectedStation.avgPrice) }}만원
-              </p>
-            </div>
-            <div>
-              <p class="text-sm text-gray-500">추천 포인트</p>
-              <p class="text-gray-600">{{ selectedStation.recommendation }}</p>
-            </div>
-          </div>
+
+          <p class="text-sm text-gray-500 italic truncate">
+            "{{ district.stations[0]?.recommendation }}"
+          </p>
+
           <button
-            @click="viewDetail(selectedStation.id)"
-            class="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            class="mt-3 text-right text-sm text-indigo-600 font-medium underline"
+            @click.stop="navigateTo(`/district/${district.name}`)"
           >
-            상세 정보 보기
+            상세 페이지 보기
           </button>
         </div>
       </div>
@@ -120,7 +154,7 @@ const stations = ref<Station[]>([
   },
   {
     id: "3",
-    name: "잠실역",
+    name: "선릉역",
     line: "2",
     avgPrice: 130000,
     recommendation: "대규모 아파트 단지와 상업시설이 잘 갖춰져 있습니다.",
@@ -138,8 +172,23 @@ const viewDetail = (stationId: string) => {
 };
 
 // 마커 클릭 핸들러
+import { nextTick, ref, computed } from "vue";
+
+const selectedDistrict = ref<string | null>(null);
+
 const handleMarkerClick = (station: Station) => {
-  selectedStation.value = station;
+  const district = districts.value.find((d) =>
+    d.stations.some((s) => s.id === station.id)
+  );
+  if (district) {
+    selectedDistrict.value = district.name;
+    hoveredDistrict.value = district.name;
+    nextTick(() => {
+      document
+        .getElementById(`district-${district.name}`)
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
 };
 
 // 팝업 닫기 핸들러
@@ -153,5 +202,51 @@ const handleMapClick = (event: MouseEvent) => {
   if (target.classList.contains("bg-gray-300")) {
     closePopup();
   }
+};
+
+const hoveredDistrict = ref<string | null>(null);
+
+interface District {
+  name: string;
+  stations: Station[];
+}
+
+const districts = ref<District[]>([
+  {
+    name: "강남구",
+    stations: [stations.value[0], stations.value[2]],
+  },
+  {
+    name: "마포구",
+    stations: [stations.value[1]],
+  },
+]);
+
+const districtStations = computed(() => {
+  return (
+    districts.value.find((d) => d.name === hoveredDistrict.value)?.stations ||
+    []
+  );
+});
+
+const avgPrice = computed(() => {
+  if (districtStations.value.length === 0) return 0;
+  const total = districtStations.value.reduce((sum, s) => sum + s.avgPrice, 0);
+  return Math.round(total / districtStations.value.length);
+});
+
+const listingsCount = computed(() => {
+  // TODO: Replace with actual data
+  return districtStations.value.length * 3;
+});
+const getAvgPrice = (district: District): number => {
+  if (district.stations.length === 0) return 0;
+  const total = district.stations.reduce((sum, s) => sum + s.avgPrice, 0);
+  return Math.round(total / district.stations.length);
+};
+
+const selectDistrict = (districtName: string) => {
+  selectedDistrict.value = districtName;
+  hoveredDistrict.value = districtName;
 };
 </script>
