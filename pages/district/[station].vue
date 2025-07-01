@@ -94,19 +94,7 @@
                       :key="facility"
                       class="flex items-center text-gray-600"
                     >
-                      <svg
-                        class="h-5 w-5 text-indigo-500 mr-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
+                      <CheckIcon class="size-5 mr-2" />
                       {{ facility }}
                     </li>
                   </ul>
@@ -133,9 +121,10 @@
 </template>
 
 <script setup lang="ts">
-import PriceTrendChart from "~/components/PriceTrendChart.vue";
-import TransactionVolumeChart from "~/components/TransactionVolumeChart.vue";
-import AreaComparisonChart from "~/components/AreaComparisonChart.vue";
+import PriceTrendChart from "@/components/PriceTrendChart.vue";
+import TransactionVolumeChart from "@/components/TransactionVolumeChart.vue";
+import AreaComparisonChart from "@/components/AreaComparisonChart.vue";
+import { CheckIcon } from "@heroicons/vue/24/solid";
 
 const route = useRoute();
 const stationId = route.params.station;
