@@ -100,7 +100,7 @@
           </div>
 
           <p class="text-sm text-gray-500 italic truncate">
-            "{{ district.stations[0]?.recommendation }}"
+            "{{ district.recommendation }}"
           </p>
 
           <button
@@ -124,7 +124,6 @@ interface Station {
   name: string;
   line: string;
   avgPrice: number;
-  recommendation: string;
   lat: number;
   lng: number;
 }
@@ -139,7 +138,6 @@ const stations = ref<Station[]>([
     name: "강남역",
     line: "2",
     avgPrice: 150000,
-    recommendation: "강남구 중심부에 위치한 역세권으로 접근성이 매우 좋습니다.",
     lat: 37.4979,
     lng: 127.0276,
   },
@@ -148,7 +146,6 @@ const stations = ref<Station[]>([
     name: "홍대입구역",
     line: "2",
     avgPrice: 120000,
-    recommendation: "젊은 문화의 중심지로 활기찬 분위기가 특징입니다.",
     lat: 37.5572,
     lng: 126.9238,
   },
@@ -157,7 +154,6 @@ const stations = ref<Station[]>([
     name: "선릉역",
     line: "2",
     avgPrice: 130000,
-    recommendation: "대규모 아파트 단지와 상업시설이 잘 갖춰져 있습니다.",
     lat: 37.5133,
     lng: 127.1001,
   },
@@ -209,16 +205,19 @@ const hoveredDistrict = ref<string | null>(null);
 interface District {
   name: string;
   stations: Station[];
+  recommendation: string;
 }
 
 const districts = ref<District[]>([
   {
     name: "강남구",
     stations: [stations.value[0], stations.value[2]],
+    recommendation: "강남구 중심부에 위치한 역세권으로 접근성이 매우 좋습니다.",
   },
   {
     name: "마포구",
     stations: [stations.value[1]],
+    recommendation: "젊은 문화의 중심지로 활기찬 분위기가 특징입니다.",
   },
 ]);
 

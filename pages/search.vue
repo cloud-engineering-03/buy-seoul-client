@@ -79,7 +79,8 @@
             <button
               v-if="currentStep > 0"
               @click="prevStep"
-              class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              :disabled="isLoading"
+              class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
             >
               이전
             </button>
@@ -91,9 +92,13 @@
             </button>
             <button
               @click="nextStep"
-              class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              :disabled="isLoading"
+              class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 disabled:cursor-not-allowed"
             >
-              {{ currentStep === steps.length - 1 ? "시세 조회하기" : "다음" }}
+              <span v-if="isLoading">조회 중...</span>
+              <span v-else>{{
+                currentStep === steps.length - 1 ? "시세 조회하기" : "다음"
+              }}</span>
             </button>
           </div>
         </div>
@@ -110,6 +115,7 @@ const selectedStation = ref<{ id: string; name: string } | null>(null);
 const minPrice = ref("");
 const maxPrice = ref("");
 const currentStep = ref(0);
+const isLoading = ref(false);
 
 const steps = ["지하철 역 선택", "예산 선택"];
 
@@ -117,9 +123,13 @@ const formatPrice = (price: string) => {
   return Number(price).toLocaleString();
 };
 
-const nextStep = () => {
-  if (currentStep.value === 0 && !selectedStation.value) {
-    alert("지하철 역을 선택해주세요");
+const nextStep = async () => {
+  if (currentStep.value === 0) {
+    if (!selectedStation.value) {
+      alert("지하철 역을 선택해주세요");
+      return;
+    }
+    currentStep.value++;
     return;
   }
 
@@ -128,36 +138,51 @@ const nextStep = () => {
       alert("예산 범위를 입력해주세요");
       return;
     }
-    search();
-    return;
+    await search();
   }
-
-  currentStep.value++;
 };
 
 const prevStep = () => {
+  if (isLoading.value) return;
   currentStep.value--;
 };
 
-const search = () => {
-  if (!selectedStation.value || !minPrice.value || !maxPrice.value) {
+const search = async () => {
+  if (!selectedStation.value) {
     alert("모든 조건을 입력해주세요");
     return;
   }
 
-  navigateTo({
-    path: "/result",
-    query: {
-      station: selectedStation.value.id,
-      min: minPrice.value,
-      max: maxPrice.value,
-    },
-  });
+  isLoading.value = true;
+  try {
+    // 이제 우리 서버의 /api/search 엔드포인트를 호출합니다.
+    const results = await $fetch("/api/search", {
+      method: "POST",
+      body: {
+        stationName: selectedStation.value.name,
+        minPrice: minPrice.value,
+        maxPrice: maxPrice.value,
+      },
+    });
+    console.log("검색 결과:", results);
+
+    // if (results && results?.length > 0) {
+    //   navigateTo({
+    //     path: "/result",
+    //     query: {
+    //       stationName: selectedStation.value.name,
+    //       minPrice: minPrice.value,
+    //       maxPrice: maxPrice.value,
+    //     },
+    //   });
+    // } else {
+    //   alert("조건에 맞는 추천 지역이 없습니다.");
+    // }
+  } catch (error: any) {
+    console.error("검색 중 오류 발생:", error);
+    alert(error.data?.message || "검색 중 오류가 발생했습니다.");
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
-
-<style scoped>
-.max-h-60 {
-  max-height: 15rem;
-}
-</style>

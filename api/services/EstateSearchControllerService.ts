@@ -2,28 +2,29 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { EstateSearchDto } from '../models/EstateSearchDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-export class TestControllerService {
+export class EstateSearchControllerService {
   constructor(public readonly httpRequest: BaseHttpRequest) {}
   /**
-   * @returns string OK
+   * @returns EstateSearchDto OK
    * @throws ApiError
    */
-  public test(): CancelablePromise<string> {
+  public searchByStationAndBudget({
+    stationName,
+    maxPrice,
+  }: {
+    stationName: string,
+    maxPrice: number,
+  }): CancelablePromise<Array<EstateSearchDto>> {
     return this.httpRequest.request({
       method: 'GET',
-      url: '/api/test',
-    });
-  }
-  /**
-   * @returns any OK
-   * @throws ApiError
-   */
-  public getDistricts(): CancelablePromise<Record<string, Record<string, any>>> {
-    return this.httpRequest.request({
-      method: 'GET',
-      url: '/api/dbtest',
+      url: '/search',
+      query: {
+        'stationName': stationName,
+        'maxPrice': maxPrice,
+      },
     });
   }
 }

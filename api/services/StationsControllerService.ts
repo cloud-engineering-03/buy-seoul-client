@@ -2,28 +2,26 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { StationsDto } from '../models/StationsDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-export class TestControllerService {
+export class StationsControllerService {
   constructor(public readonly httpRequest: BaseHttpRequest) {}
   /**
-   * @returns string OK
+   * @returns StationsDto OK
    * @throws ApiError
    */
-  public test(): CancelablePromise<string> {
+  public getSubwayStations({
+    line = 1,
+  }: {
+    line?: number,
+  }): CancelablePromise<Array<StationsDto>> {
     return this.httpRequest.request({
       method: 'GET',
-      url: '/api/test',
-    });
-  }
-  /**
-   * @returns any OK
-   * @throws ApiError
-   */
-  public getDistricts(): CancelablePromise<Record<string, Record<string, any>>> {
-    return this.httpRequest.request({
-      method: 'GET',
-      url: '/api/dbtest',
+      url: '/stations',
+      query: {
+        'line': line,
+      },
     });
   }
 }
